@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',sans-serif;background:linear-gradient(135deg,#0f0c29,#302b63,#24243e);min-height:100vh;color:#fff;overflow-x:hidden}
+.screen{display:none;flex-direction:column;align-items:center;justify-content:flex-start;min-height:100vh;padding:16px;animation:fi .35s ease}
+.screen.active{display:flex}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── MENU ── */
+.logo{font-size:54px;font-weight:900;background:linear-gradient(90deg,#f7971e,#ffd200,#f7971e);background-size:200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:shine 3s linear infinite;margin-bottom:2px}
+@keyframes shine{0%{background-position:0%}100%{background-position:200%}}
+.tagline{color:#a0c4ff;font-size:13px;letter-spacing:3px;text-transform:uppercase;margin-bottom:28px}
+.mbtn{background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a2e;border:none;padding:13px 36px;border-radius:50px;font-size:16px;font-weight:700;cursor:pointer;margin:6px;transition:transform .15s,box-shadow .15s;box-shadow:0 4px 18px rgba(247,151,30,.45)}
+.mbtn:hover{transform:scale(1.05);box-shadow:0 6px 26px rgba(247,151,30,.65)}
+.mbtn.sec{background:transparent;color:#a0c4ff;border:2px solid #a0c4ff;box-shadow:none}
+.mbtn.sec:hover{background:rgba(160,196,255,.1);transform:scale(1.03)}
+.diff-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;max-width:560px;width:100%;margin:20px 0}
+.diff-card{border-radius:14px;padding:14px 10px;text-align:center;border:1px solid rgba(255,255,255,.15);cursor:pointer;transition:transform .15s}
+.diff-card:hover{transform:translateY(-3px)}
+.diff-card h3{font-size:15px;font-weight:700;margin-bottom:4px}
+.diff-card p{font-size:11px;opacity:.75}
+.diff-easy{background:rgba(74,222,128,.12);border-color:rgba(74,222,128,.4)}
+.diff-med{background:rgba(251,191,36,.12);border-color:rgba(251,191,36,.4)}
+.diff-hard{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.4)}
+.diff-imp{background:rgba(167,139,250,.12);border-color:rgba(167,139,250,.4)}
+.level-select-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;max-width:520px;width:100%;margin:12px 0}
+.lvl-btn{width:44px;height:44px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.07);color:#ccd;font-size:12px;font-weight:600;cursor:pointer;transition:all .12s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.lvl-btn:hover{transform:scale(1.1);background:rgba(255,255,255,.15)}
+.lvl-btn.easy{border-color:rgba(74,222,128,.5);background:rgba(74,222,128,.1)}
+.lvl-btn.med{border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.1)}
+.lvl-btn.hard{border-color:rgba(248,113,113,.5);background:rgba(248,113,113,.1)}
+.lvl-btn.imp{border-color:rgba(167,139,250,.5);background:rgba(167,139,250,.1)}
+.lvl-btn .star-tiny{font-size:8px;line-height:1}
+
+/* ── RULES ── */
+.rcard{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:22px;max-width:580px;width:100%;margin-bottom:16px}
+.rcard h2{color:#ffd200;font-size:18px;margin-bottom:12px}
+.ri{display:flex;gap:10px;margin-bottom:10px;font-size:13px;color:#ccd;line-height:1.5;align-items:flex-start}
+.rn{background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a2e;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;flex-shrink:0;margin-top:1px}
+.pshowcase{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;justify-content:center}
+.pmini{display:flex;flex-direction:column;align-items:center;gap:3px}
+.pmini-grid{display:grid;gap:1px}
+.pmini-cell{border-radius:1px}
+
+/* ── GAME ── */
+#game-screen{flex-direction:row;align-items:flex-start;justify-content:center;gap:14px;padding:12px}
+.lsb{width:200px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;padding-top:4px}
+.rsb{width:185px;flex-shrink:0;display:flex;flex-direction:column;gap:10px;padding-top:4px}
+.gc{display:flex;flex-direction:column;align-items:center;gap:10px}
+.lvl-badge{background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a2e;padding:5px 14px;border-radius:50px;font-size:12px;font-weight:700;align-self:flex-start}
+.scard{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:12px}
+.slbl{font-size:10px;color:#a0c4ff;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px}
+.sval{font-size:24px;font-weight:700;color:#ffd200}
+.sunit{font-size:11px;color:#aab;margin-top:1px}
+.board-wrap{background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.15);border-radius:14px;padding:10px}
+#board{display:grid;gap:2px}
+.cell{border-radius:5px;border:1.5px solid rgba(255,255,255,.15);cursor:pointer;transition:all .13s;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;position:relative}
+.cell.empty{background:rgba(255,255,255,.06)}
+.cell.empty:hover{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.4);transform:scale(1.06)}
+.cell.blocked{background:rgba(140,80,220,.3);border:2px solid rgba(200,140,255,.6);cursor:not-allowed;font-size:14px}
+.cell.placed{cursor:pointer}
+.cell.placed:hover{filter:brightness(1.18)}
+.cell.hint-ok{background:rgba(74,222,128,.25)!important;border-color:#4ade80!important}
+.pieces-panel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:11px}
+.pieces-panel h3{font-size:11px;color:#a0c4ff;text-transform:uppercase;letter-spacing:1px;margin-bottom:9px}
+.pieces-list{display:flex;flex-direction:column;gap:5px}
+.popt{background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.14);border-radius:9px;padding:7px 8px;cursor:pointer;transition:all .13s;display:flex;align-items:center;gap:7px}
+.popt:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3)}
+.popt.sel{border-color:#ffd200;background:rgba(255,208,0,.1);box-shadow:0 0 10px rgba(255,208,0,.2)}
+.popt.used{opacity:.32;cursor:not-allowed}
+.popt-name{font-size:11px;color:#ccd;flex:1}
+.fbpanel{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:12px;min-height:70px}
+.fbpanel h3{font-size:10px;color:#a0c4ff;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.fbmsg{font-size:12px;line-height:1.5;color:#ccd}
+.fbmsg.ok{color:#4ade80;font-weight:600}
+.fbmsg.err{color:#f87171;font-weight:600}
+.abtn{background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.18);border-radius:9px;padding:9px 8px;cursor:pointer;font-size:12px;color:#ccd;transition:all .13s;text-align:center;font-family:inherit;width:100%}
+.abtn:hover{background:rgba(255,255,255,.13);color:#fff}
+.abtn.pri{background:linear-gradient(135deg,#f7971e,#ffd200);color:#1a1a2e;font-weight:700;border:none;box-shadow:0 2px 10px rgba(247,151,30,.3)}
+.abtn.pri:hover{transform:scale(1.03)}
+.abtn.dng{border-color:rgba(248,113,113,.4);color:#f87171}
+.abtn.dng:hover{background:rgba(248,113,113,.1)}
+.pbbar{background:rgba(255,255,255,.1);border-radius:50px;height:5px;overflow:hidden;margin:5px 0}
+.pbfill{background:linear-gradient(90deg,#f7971e,#ffd200);height:100%;border-radius:50px;transition:width .4s}
+.stars-row{display:flex;gap:4px;align-items:center;font-size:12px;color:#a0c4ff}
+.star{font-size:16px;filter:grayscale(1);transition:filter .3s}
+.star.lit{filter:none}
+
+/* ── ANSWER INPUT ── */
+.answer-section{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:12px}
+.answer-section h3{font-size:11px;color:#a0c4ff;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.ainput-row{display:flex;flex-direction:column;gap:7px}
+.ainput-group{display:flex;align-items:center;gap:6px}
+.ainput-label{font-size:11px;color:#ccd;width:70px;flex-shrink:0}
+.ainput{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:7px;padding:5px 8px;color:#fff;font-size:14px;font-weight:700;width:60px;text-align:center;font-family:inherit}
+.ainput:focus{outline:none;border-color:#ffd200;background:rgba(255,208,0,.08)}
+.ainput.correct{border-color:#4ade80;background:rgba(74,222,128,.1)}
+.ainput.wrong{border-color:#f87171;background:rgba(248,113,113,.1)}
+.ainput:disabled{opacity:0.55;cursor:not-allowed;background:rgba(248,113,113,.05)}
+.check-btn{background:linear-gradient(135deg,#4ade80,#22c55e);color:#0f1a0f;border:none;border-radius:7px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:transform .12s;font-family:inherit}
+.check-btn:hover{transform:scale(1.05)}
+
+/* ── LIVES ── */
+.lives-row{display:flex;gap:5px;align-items:center;justify-content:center;margin:4px 0}
+.heart{font-size:22px;transition:all .3s;filter:drop-shadow(0 0 4px rgba(248,113,113,.6))}
+.heart.lost{filter:grayscale(1) opacity(.25);transform:scale(.85)}
+@keyframes heartbeat{0%{transform:scale(1)}30%{transform:scale(1.35)}60%{transform:scale(.9)}100%{transform:scale(1)}}
+.heart.pulse{animation:heartbeat .4s ease}
+@keyframes shakeLost{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.heart.shake{animation:shakeLost .35s ease}
+.lives-label{font-size:11px;color:#f87171;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.gameover-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:50;animation:fi .3s ease}
+.gameover-box{background:linear-gradient(135deg,#1a0a0a,#2d0f0f);border:2px solid #f87171;border-radius:22px;padding:36px 48px;text-align:center;max-width:380px}
+.gameover-title{font-size:52px;margin-bottom:8px}
+.gameover-msg{color:#f87171;font-size:18px;font-weight:700;margin-bottom:6px}
+.gameover-sub{color:#aab;font-size:13px;margin-bottom:24px}
+
+
+/* ── COLOR PERCENTAGE ── */
+.pct-section{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:13px;padding:12px}
+.pct-section h3{font-size:11px;color:#a0c4ff;text-transform:uppercase;letter-spacing:1px;margin-bottom:9px}
+.pct-row{display:flex;align-items:center;gap:7px;margin-bottom:7px}
+.pct-swatch{width:14px;height:14px;border-radius:3px;flex-shrink:0;border:1px solid rgba(255,255,255,.25)}
+.pct-name{font-size:11px;color:#ccd;width:28px;flex-shrink:0}
+.pct-input{background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.2);border-radius:7px;padding:4px 6px;color:#fff;font-size:13px;font-weight:700;width:58px;text-align:center;font-family:inherit}
+.pct-input:focus{outline:none;border-color:#ffd200;background:rgba(255,208,0,.08)}
+.pct-input.correct{border-color:#4ade80;background:rgba(74,222,128,.1)}
+.pct-input.wrong{border-color:#f87171;background:rgba(248,113,113,.1)}
+.pct-input:disabled{opacity:.55;cursor:not-allowed}
+.pct-symbol{font-size:12px;color:#aab}
+.pct-check-btn{background:linear-gradient(135deg,#818cf8,#6366f1);color:#fff;border:none;border-radius:7px;padding:6px 10px;font-size:11px;font-weight:700;cursor:pointer;transition:transform .12s;font-family:inherit;width:100%;margin-top:4px}
+.pct-check-btn:hover{transform:scale(1.04)}
+.pct-feedback{font-size:11px;margin-top:5px;min-height:14px;line-height:1.4}
+
+#victory-screen{text-align:center;justify-content:center}
+.vtitle{font-size:44px;font-weight:900;background:linear-gradient(90deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px}
+.conf{position:fixed;animation:fall linear forwards;pointer-events:none;z-index:20}
+@keyframes fall{0%{opacity:1;transform:translateY(-20px) rotate(0deg)}100%{opacity:0;transform:translateY(100vh) rotate(720deg)}}
+.vstats{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:360px;width:100%;margin:16px 0}
+
+@media(max-width:640px){
+  #game-screen{flex-direction:column;align-items:center}
+  .lsb,.rsb{width:100%;flex-direction:row;flex-wrap:wrap}
+  .lsb .scard{flex:1;min-width:70px}
+  .cell{font-size:9px}
+}
+</style>
+</head><body>
+
+<!-- ══════════════ MENU ══════════════ -->
+<div class="screen active" id="menu-screen">
+  <div style="text-align:center;width:100%;max-width:580px">
+    <div class="logo">PENTAMIX</div>
+    <div class="tagline">O Jogo dos Pentaminós · 100 Níveis</div>
+    <div class="diff-grid">
+      <div class="diff-card diff-easy" onclick="filterDiff('easy')">
+        <h3 style="color:#4ade80">🟢 Fácil</h3>
+        <p>Níveis 1–30<br>Grades pequenas<br>Poucas peças</p>
+      </div>
+      <div class="diff-card diff-med" onclick="filterDiff('med')">
+        <h3 style="color:#fbbf24">🟡 Médio</h3>
+        <p>Níveis 31–60<br>Peças bloqueadas<br>Mais cálculos</p>
+      </div>
+      <div class="diff-card diff-hard" onclick="filterDiff('hard')">
+        <h3 style="color:#f87171">🔴 Difícil</h3>
+        <p>Níveis 61–85<br>Grades irregulares<br>Muitas peças</p>
+      </div>
+      <div class="diff-card diff-imp" onclick="filterDiff('imp')">
+        <h3 style="color:#a78bfa">🟣 Impossível</h3>
+        <p>Níveis 86–100<br>Máximo desafio<br>Só os bravos!</p>
+      </div>
+    </div>
+    <div id="level-select-area">
+      <p style="font-size:12px;color:#a0c4ff;margin-bottom:8px">Clique em uma dificuldade para ver os níveis, ou:</p>
+    </div>
+    <button class="mbtn" onclick="startGame(1)">▶ Começar do Início</button>
+    <button class="mbtn sec" onclick="showScreen('rules-screen')">📋 Regras</button>
+  </div>
+</div>
+
+<!-- ══════════════ RULES ══════════════ -->
+<div class="screen" id="rules-screen">
+  <div class="rcard">
+    <h2>📐 O que são Pentaminós?</h2>
+    <p style="font-size:13px;color:#ccd;line-height:1.6;margin-bottom:10px">Pentaminós são figuras com até <strong style="color:#ffd200">5 quadradinhos</strong> conectados. Neste jogo usamos peças de 3, 4 e 5 quadradinhos para que cada fase encaixe perfeitamente!</p>
+    <div class="pshowcase" id="rules-showcase"></div>
+  </div>
+  <div class="rcard">
+    <h2>🎮 Como Jogar</h2>
+    <div class="ri"><div class="rn">1</div><span>Escolha uma peça no painel e clique no tabuleiro para posicioná-la.</span></div>
+    <div class="ri"><div class="rn">2</div><span>Nos níveis com peças <strong style="color:#c084fc">roxas fixas</strong>, só coloque peças <strong style="color:#ffd200">ao redor</strong> delas, nunca em cima!</span></div>
+    <div class="ri"><div class="rn">3</div><span>Preencha o tabuleiro completamente para avançar.</span></div>
+    <div class="ri"><div class="rn">4</div><span>Calcule a <strong style="color:#60a5fa">Área</strong> (quantidade de quadradinhos) e o <strong style="color:#34d399">Perímetro</strong> do preenchimento e digita nas caixinhas!</span></div>
+    <div class="ri"><div class="rn">5</div><span>Use 🔄 Rotacionar e ↔ Espelhar para encaixar as peças. Clique em uma peça colocada para removê-la.</span></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+    <button class="mbtn" onclick="startGame(1)">▶ Jogar Agora</button>
+    <button class="mbtn sec" onclick="showScreen('menu-screen')">← Voltar</button>
+  </div>
+</div>
+
+<!-- ══════════════ GAME ══════════════ -->
+<div class="screen" id="game-screen">
+  <div class="lsb">
+    <div class="lvl-badge" id="lvl-badge">Nível 1</div>
+    <div class="scard" style="text-align:center">
+      <div class="slbl" style="margin-bottom:6px">❤️ Vidas</div>
+      <div class="lives-row" id="lives-row">
+        <span class="heart" id="h1">❤️</span>
+        <span class="heart" id="h2">❤️</span>
+        <span class="heart" id="h3">❤️</span>
+        <span class="heart" id="h4">❤️</span>
+        <span class="heart" id="h5">❤️</span>
+      </div>
+      <div class="lives-label" id="lives-label">5 vidas</div>
+    </div>
+    <div class="scard">
+      <div class="slbl">Progresso</div>
+      <div class="pbbar"><div class="pbfill" id="pb" style="width:0%"></div></div>
+      <div style="font-size:11px;color:#aab" id="pb-txt">0/0</div>
+    </div>
+    <div class="scard">
+      <div class="slbl">Dificuldade</div>
+      <div style="font-size:13px;font-weight:700;margin-top:3px" id="diff-lbl">🟢 Fácil</div>
+    </div>
+    <div class="answer-section">
+      <h3>Sua resposta</h3>
+      <div class="ainput-row">
+        <div class="ainput-group">
+          <div class="ainput-label">📐 Área =</div>
+          <input class="ainput" type="number" id="inp-area" placeholder="?">
+        </div>
+        <div class="ainput-group">
+          <div class="ainput-label">📏 Perímetro =</div>
+          <input class="ainput" type="number" id="inp-perim" placeholder="?">
+        </div>
+        <button class="check-btn" onclick="checkAnswers()">✔ Verificar</button>
+      </div>
+      <div style="font-size:11px;margin-top:6px;min-height:16px" id="ans-feedback"></div>
+    </div>
+    <div class="pct-section">
+      <h3>% por cor</h3>
+      <div id="pct-rows"></div>
+      <button class="pct-check-btn" onclick="checkPercentages()">✔ Verificar %</button>
+      <div class="pct-feedback" id="pct-feedback"></div>
+    </div>
+  </div>
+
+  <div class="gc">
+    <div class="board-wrap"><div id="board"></div></div>
+    <div class="stars-row">
+      <span class="star" id="st1">⭐</span><span class="star" id="st2">⭐</span><span class="star" id="st3">⭐</span>
+      <span style="font-size:12px;color:#ffd200;margin-left:6px" id="pts-disp">0 pts</span>
+    </div>
+    <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:center">
+      <button class="abtn" style="width:auto;padding:8px 14px" onclick="rotatePiece()">🔄 Rotacionar</button>
+      <button class="abtn" style="width:auto;padding:8px 14px" onclick="flipPiece()">↔ Espelhar</button>
+      <button class="abtn" style="width:auto;padding:8px 14px" onclick="showHint()">💡 Dica</button>
+    </div>
+    <div class="scard" style="width:100%;max-width:100%">
+      <div class="slbl">Objetivo da fase</div>
+      <div style="font-size:12px;color:#ccd;line-height:1.5;margin-top:4px" id="obj-txt"></div>
+    </div>
+  </div>
+
+  <div class="rsb">
+    <div class="pieces-panel">
+      <h3>Peças disponíveis</h3>
+      <div class="pieces-list" id="pieces-list"></div>
+    </div>
+    <div class="fbpanel">
+      <h3>Status</h3>
+      <div class="fbmsg" id="fb-msg">Selecione uma peça!</div>
+    </div>
+    <button class="abtn dng" onclick="resetLevel()">↺ Recomeçar fase</button>
+    <button class="abtn" onclick="showScreen('menu-screen')">🏠 Menu</button>
+  </div>
+</div>
+
+<!-- ══════════════ VICTORY ══════════════ -->
+<div class="screen" id="victory-screen">
+  <div class="vtitle">🎉 Parabéns!</div>
+  <p style="color:#a0c4ff;font-size:15px" id="v-sub"></p>
+  <div class="stars-row" style="margin:12px 0;justify-content:center">
+    <span class="star lit" id="vs1">⭐</span><span class="star" id="vs2">⭐</span><span class="star" id="vs3">⭐</span>
+    <span style="font-size:14px;color:#ffd200;margin-left:8px" id="v-pts2"></span>
+  </div>
+  <div class="vstats">
+    <div class="scard" style="text-align:center"><div class="slbl">Área respondida</div><div class="sval" id="va-area">—</div></div>
+    <div class="scard" style="text-align:center"><div class="slbl">Perímetro respondido</div><div class="sval" id="va-perim">—</div></div>
+    <div class="scard" style="text-align:center"><div class="slbl">Nível</div><div class="sval" id="v-lvl">1</div></div>
+    <div class="scard" style="text-align:center"><div class="slbl">Pontos</div><div class="sval" id="v-score2">0</div></div>
+  </div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+    <button class="mbtn" id="next-btn" onclick="nextLevel()">▶ Próximo Nível</button>
+    <button class="mbtn sec" onclick="startGame(currentLevel)">↺ Repetir</button>
+    <button class="mbtn sec" onclick="showScreen('menu-screen')">🏠 Menu</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// PIECE LIBRARY — tamanhos variados para encaixar perfeitamente
+// ═══════════════════════════════════════════════════
+const PIECES = {
+  // 5 células (pentaminós clássicos)
+  F:{n:'F',sz:5,color:'#ef4444',cells:[[0,1],[0,2],[1,0],[1,1],[2,1]]},
+  I:{n:'I',sz:5,color:'#f97316',cells:[[0,0],[0,1],[0,2],[0,3],[0,4]]},
+  L:{n:'L',sz:5,color:'#eab308',cells:[[0,0],[1,0],[2,0],[3,0],[3,1]]},
+  N:{n:'N',sz:5,color:'#84cc16',cells:[[0,1],[1,0],[1,1],[2,0],[3,0]]},
+  P:{n:'P',sz:5,color:'#22c55e',cells:[[0,0],[0,1],[1,0],[1,1],[2,0]]},
+  T:{n:'T',sz:5,color:'#14b8a6',cells:[[0,0],[0,1],[0,2],[1,1],[2,1]]},
+  U:{n:'U',sz:5,color:'#3b82f6',cells:[[0,0],[0,2],[1,0],[1,1],[1,2]]},
+  V:{n:'V',sz:5,color:'#8b5cf6',cells:[[0,0],[1,0],[2,0],[2,1],[2,2]]},
+  W:{n:'W',sz:5,color:'#a855f7',cells:[[0,0],[1,0],[1,1],[2,1],[2,2]]},
+  X:{n:'X',sz:5,color:'#ec4899',cells:[[0,1],[1,0],[1,1],[1,2],[2,1]]},
+  Y:{n:'Y',sz:5,color:'#f43f5e',cells:[[0,1],[1,0],[1,1],[2,1],[3,1]]},
+  Z:{n:'Z',sz:5,color:'#06b6d4',cells:[[0,0],[0,1],[1,1],[2,1],[2,2]]},
+  // 4 células (tetraminós)
+  I4:{n:'I4',sz:4,color:'#fb923c',cells:[[0,0],[0,1],[0,2],[0,3]]},
+  L4:{n:'L4',sz:4,color:'#facc15',cells:[[0,0],[1,0],[2,0],[2,1]]},
+  J4:{n:'J4',sz:4,color:'#a3e635',cells:[[0,1],[1,1],[2,0],[2,1]]},
+  S4:{n:'S4',sz:4,color:'#34d399',cells:[[0,1],[0,2],[1,0],[1,1]]},
+  Z4:{n:'Z4',sz:4,color:'#22d3ee',cells:[[0,0],[0,1],[1,1],[1,2]]},
+  T4:{n:'T4',sz:4,color:'#818cf8',cells:[[0,0],[0,1],[0,2],[1,1]]},
+  O4:{n:'O4',sz:4,color:'#e879f9',cells:[[0,0],[0,1],[1,0],[1,1]]},
+  // 3 células (triominós)
+  I3:{n:'I3',sz:3,color:'#67e8f9',cells:[[0,0],[0,1],[0,2]]},
+  L3:{n:'L3',sz:3,color:'#86efac',cells:[[0,0],[1,0],[1,1]]},
+  // 2 células (dominó)
+  D2:{n:'D2',sz:2,color:'#fca5a5',cells:[[0,0],[0,1]]},
+  // 1 célula (monominó)
+  M1:{n:'M1',sz:1,color:'#fde68a',cells:[[0,0]]}
+};
+
+// ═══════════════════════════════════════════════════
+// LEVEL GENERATOR — 100 NÍVEIS
+// Fácil 1-30 | Médio 31-60 | Difícil 61-85 | Impossível 86-100
+// Cada nível: { rows, cols, blocked:[[r,c]...], pieces:[names], blocked_label }
+// REGRA: rows*cols - blocked.length === soma dos tamanhos das peças
+// ═══════════════════════════════════════════════════
+function makeLevels() {
+  const lvls = [];
+
+  // ── FÁCIL 1–30 ──────────────────────────────────
+  // Lv1: 3x3=9 células → 3+3+3 = 3×I3
+  lvls.push({rows:3,cols:3,blocked:[],pieces:['I3','L3','L3'],obj:'Preencha o quadrado 3×3 com 3 peças de 3 quadradinhos!',sz:90});
+  // Lv2: 2x4=8 → L4+J4 (espelhados)
+  lvls.push({rows:2,cols:4,blocked:[],pieces:['L4','J4'],obj:'Preencha o retângulo 2×4 com 2 peças espelhadas!',sz:90});
+  // Lv3: 3x3=9 → L3+I3+D2+M1=9
+  lvls.push({rows:3,cols:3,blocked:[],pieces:['L3','I3','D2','M1'],obj:'Use triominós, dominó e monominó para preencher o 3×3!',sz:90});
+  // Lv4: 2x5=10 → I4+L3+D2+M1
+  lvls.push({rows:2,cols:5,blocked:[],pieces:['I4','L3','D2','M1'],obj:'Preencha o retângulo 2×5!',sz:84});
+  // Lv5: 3x4=12 → I4+L4+J4
+  lvls.push({rows:3,cols:4,blocked:[],pieces:['I4','L4','J4'],obj:'Preencha o retângulo 3×4 com 3 tetraminós!',sz:84});
+  // Lv6: 3x4=12 → O4+L4+J4
+  lvls.push({rows:3,cols:4,blocked:[],pieces:['O4','L4','J4'],obj:'Encaixe o quadrado e os "L" espelhados no retângulo!',sz:84});
+  // Lv7: 4x4=16 com bloqueio [1,1],[1,2],[2,1],[2,2]=4 → livre=12 → I4+L4+J4
+  lvls.push({rows:4,cols:4,blocked:[[1,1],[1,2],[2,1],[2,2]],pieces:['I4','L4','J4'],obj:'Coloque as peças ao redor do bloco central!',sz:78});
+  // Lv8: 4x4=16 bloqueio [0,0],[0,3],[3,0],[3,3]=4 → livre=12 → P+S4+L3
+  lvls.push({rows:4,cols:4,blocked:[[0,0],[0,3],[3,0],[3,3]],pieces:['P','S4','L3'],obj:'Os quatro cantos estão bloqueados — preencha o restante!',sz:78});
+  // Lv9: 4x4=16 bloqueio linha [1,0],[1,1],[1,2],[1,3]=4 → libre=12 → I4+L4+J4
+  lvls.push({rows:4,cols:4,blocked:[[1,0],[1,1],[1,2],[1,3]],pieces:['I4','L4','J4'],obj:'Uma linha está bloqueada — use 3 tetraminós!',sz:78});
+  // Lv10: 3x5=15 → P+L4+L3+I3=15
+  lvls.push({rows:3,cols:5,blocked:[],pieces:['P','L4','L3','I3'],obj:'Mistura de peças no retângulo 3×5!',sz:76});
+  // Lv11: 4x4=16 bloqueio [0,0],[3,3]=2 → 14 → T4+L4+J4+D2
+  lvls.push({rows:4,cols:4,blocked:[[0,0],[3,3]],pieces:['T4','L4','J4','D2'],obj:'Dois cantos bloqueados — ajuste as peças!',sz:78});
+  // Lv12: 5x2=10 → T+D2+D2+M1 — corrigido: 5=P(5), 2+2+1=5... wait 5+5=10 ✓
+  lvls.push({rows:5,cols:2,blocked:[],pieces:['P','D2','D2','M1'],obj:'Colunas altas — encaixe as peças verticalmente!',sz:74});
+  // Lv13: 3x4=12 → I3+L3+L3+D2+M1
+  lvls.push({rows:3,cols:4,blocked:[],pieces:['I3','L3','L3','D2','M1'],obj:'Use triominós, dominó e monominó no 3×4!',sz:84});
+  // Lv14: 4x4=16 bloqueio [0,1],[0,2]=2 → 14 → O4+L4+J4+D2
+  lvls.push({rows:4,cols:4,blocked:[[0,1],[0,2]],pieces:['O4','L4','J4','D2'],obj:'Topo parcialmente bloqueado — encaixe as 4 peças!',sz:78});
+  // Lv15: 2x6=12 → I4+L4+J4
+  lvls.push({rows:2,cols:6,blocked:[],pieces:['I4','L4','J4'],obj:'Retângulo estreito 2×6 — 3 tetraminós!',sz:72});
+  // Lv16: 4x5=20 bloqueio [0,0],[4-1... wait: rows=4,cols=5; [1,2],[2,2]=2→18 → I4+L4+T4+S4+D2
+  // 4+4+4+4+2=18 ✓
+  lvls.push({rows:4,cols:5,blocked:[[1,2],[2,2]],pieces:['T','L4','J4','Z4','M1'],obj:'Meio bloqueado no centro — 5 peças para encaixar!',sz:74});
+  // Lv17: 3x5=15 → P+T+I3+D2=15
+  lvls.push({rows:3,cols:5,blocked:[],pieces:['P','T','I3','D2'],obj:'Mistura de pentaminós e peças menores no 3×5!',sz:76});
+  // Lv18: 4x5=20 bloqueio [0,0],[0,4],[3,0],[3,4]=4 → 16 → L4+J4+S4+Z4
+  lvls.push({rows:4,cols:5,blocked:[[0,0],[0,4],[3,0],[3,4]],pieces:['L4','J4','S4','Z4'],obj:'Quatro cantos bloqueados — 4 tetraminós!',sz:74});
+  // Lv19: 5x4=20 bloqueio [[2,1],[2,2]]=2 → 18 → P+L4+S4+L3+D2=18
+  lvls.push({rows:5,cols:4,blocked:[[2,1],[2,2]],pieces:['P','L4','S4','L3','D2'],obj:'Bloqueio no meio da grade 5×4!',sz:72});
+  // Lv20: 5x3=15 → P+I4+I3+L3=15
+  lvls.push({rows:5,cols:3,blocked:[],pieces:['P','I4','I3','L3'],obj:'Grade alta e estreita 5×3 — organize as peças!',sz:76});
+  // Lv21-30: mais variações fáceis
+  lvls.push({rows:4,cols:4,blocked:[],pieces:['L4','J4','S4','Z4'],obj:'Quatro tetraminós no quadrado 4×4!',sz:78});
+  lvls.push({rows:2,cols:7,blocked:[],pieces:['I4','L3','I3','D2','D2'],obj:'Retângulo 2×7 — use peças variadas!',sz:70});
+  lvls.push({rows:3,cols:5,blocked:[[1,2]],pieces:['L4','T4','S4','D2'],obj:'Centro bloqueado no 3×5!',sz:76});
+  lvls.push({rows:4,cols:4,blocked:[[0,0],[0,3]],pieces:['T4','O4','Z4','D2'],obj:'Dois cantos superiores bloqueados!',sz:78});
+  lvls.push({rows:5,cols:4,blocked:[],pieces:['P','L4','T4','L3'],obj:'Grade 5×4 — pentaminó + tetraminós + triominó!',sz:72});
+  lvls.push({rows:3,cols:6,blocked:[[1,1],[1,4]],pieces:['I4','S4','Z4','O4','D2'],obj:'Dois bloqueios internos no 3×6!',sz:70});
+  lvls.push({rows:4,cols:5,blocked:[],pieces:['P','T','D2','D2','M1'],obj:'Grade 4×5 livre — dois pentaminós!',sz:74});
+  lvls.push({rows:5,cols:4,blocked:[[0,0],[4,3]],pieces:['I4','L4','J4','T4','D2'],obj:'Cantos opostos bloqueados no 5×4!',sz:72});
+  lvls.push({rows:3,cols:6,blocked:[],pieces:['I','L4','L3','D2'],obj:'Retângulo 3×6 — inclui pentaminó I!',sz:70});
+  lvls.push({rows:4,cols:5,blocked:[[1,1],[1,3],[2,1],[2,3]],pieces:['P','T4','Z4','L3'],obj:'Padrão de bloqueio quadriculado!',sz:74});
+
+  // ── MÉDIO 31–60 ──────────────────────────────────
+  // 5x4=20 → P+T+L4+M1 5+5+4+1=15... need 20
+  // 5x4=20 bloqueio 0: P+T+T4+L3+D2 5+5+4+3+2=19... 
+  // Vou construir médio com grades maiores e mais peças
+  const medConfigs = [
+    {rows:5,cols:4,blocked:[],pieces:['P','T','L4','L3','D2'],total:20},      // 5+5+4+3+2=19... 
+    // Preciso garantir soma. Vou usar uma função de verificação
+  ];
+  
+  // Médio — defino manualmente garantindo soma
+  const med = [
+    // 31: 5x4=20, bloq=0, need 20: P(5)+T(5)+L4(4)+S4(4)+D2(2)=20
+    {rows:5,cols:4,blocked:[],pieces:['P','T','L4','S4','D2'],obj:'Grade 5×4 — dois pentaminós e mais!',sz:72},
+    // 32: 4x5=20, bloq=0: L(5)+V(5)+O4(4)+L3(3)+D2(2)+M1(1)=20
+    {rows:4,cols:5,blocked:[],pieces:['L','V','O4','L3','D2'],obj:'Pentaminós L e V na grade 4×5!',sz:74},
+    // 33: 5x5=25, bloq=[2,2]=1, livre=24: L(5)+T(5)+P(5)+I4(4)+L3(3)+D2(2)=24
+    {rows:5,cols:5,blocked:[[2,2]],pieces:['L','T','P','I4','L3','D2'],obj:'Quadrado 5×5 com centro bloqueado!',sz:70},
+    // 34: 5x4=20, bloq=[0,0],[4,3]=2, livre=18: L(5)+N(5)+L4(4)+I3(3)+M1(1)=18... 5+5+4+3+1=18 ✓
+    {rows:5,cols:4,blocked:[[0,0],[4,3]],pieces:['L','N','L4','I3','M1'],obj:'Cantos opostos bloqueados na 5×4!',sz:72},
+    // 35: 6x4=24, bloq=0: F(5)+I(5)+L4(4)+T4(4)+L3(3)+I3(3)=24
+    {rows:6,cols:4,blocked:[],pieces:['F','I','L4','T4','L3','I3'],obj:'Grade alta 6×4 — 6 peças variadas!',sz:64},
+    // 36: 5x5=25, bloq=0: F(5)+N(5)+P(5)+T4(4)+L3(3)+I3(3)=25
+    {rows:5,cols:5,blocked:[],pieces:['F','N','P','T4','L3','I3'],obj:'Quadrado 5×5 completamente livre!',sz:70},
+    // 37: 6x4=24, bloq=[0,2],[5,1]=2, livre=22: L(5)+Y(5)+T4(4)+S4(4)+I3(3)+M1(1)=22
+    {rows:6,cols:4,blocked:[[0,2],[5,1]],pieces:['L','Y','T4','S4','I3','M1'],obj:'Grade 6×4 com bloqueios nos cantos!',sz:64},
+    // 38: 4x6=24, bloq=[1,2],[2,3]=2, livre=22: T(5)+U(5)+S4(4)+Z4(4)+I3(3)+M1(1)=22
+    {rows:4,cols:6,blocked:[[1,2],[2,3]],pieces:['T','U','S4','Z4','I3','M1'],obj:'Retângulo 4×6 com bloqueios internos!',sz:64},
+    // 39: 5x5=25, bloq=[0,0],[4,4]=2, livre=23: V(5)+W(5)+T(5)+L4(4)+I3(3)+M1(1)=23
+    {rows:5,cols:5,blocked:[[0,0],[4,4]],pieces:['V','W','T','L4','I3','M1'],obj:'Cantos opostos bloqueados no 5×5!',sz:70},
+    // 40: 5x5=25, bloq=[2,0],[2,4]=2, livre=23: Z(5)+X(5)+L4(4)+T4(4)+L3(3)+D2(2)=23
+    {rows:5,cols:5,blocked:[[2,0],[2,4]],pieces:['Z','X','L4','T4','L3','D2'],obj:'Linha do meio com bloqueios laterais!',sz:70},
+    // 41: 6x5=30, bloq=[2,2],[3,2]=2, livre=28: F(5)+I(5)+L(5)+P(5)+T4(4)+I3(3)+M1(1)=28
+    {rows:6,cols:5,blocked:[[2,2],[3,2]],pieces:['F','I','L','P','T4','I3','M1'],obj:'Grade 6×5 — 7 peças e bloqueio central!',sz:62},
+    // 42-60: mais variações médias
+    {rows:5,cols:6,blocked:[[0,0],[4,5]],pieces:['T','U','V','L4','S4','D2'],obj:'Retângulo 5×6 com cantos bloqueados!',sz:60},
+    {rows:4,cols:7,blocked:[[1,3],[2,3]],pieces:['I','P','T4','O4','L3','D2'],obj:'Retângulo largo 4×7!',sz:60},
+    {rows:6,cols:4,blocked:[],pieces:['F','T','L4','J4','Z4','M1'],obj:'Grade 6×4 completamente livre!',sz:64},
+    {rows:5,cols:5,blocked:[[1,1],[3,3]],pieces:['W','Y','T4','S4','I3','D2'],obj:'Dois bloqueios internos no 5×5!',sz:70},
+    {rows:6,cols:5,blocked:[[0,2],[5,2]],pieces:['F','N','P','L4','T4','I3'],obj:'Bloqueios no topo e base — 6×5!',sz:62},
+    {rows:4,cols:7,blocked:[],pieces:['I','L','T4','O4','L3','D2','M1'],obj:'Grade larga 4×7 livre!',sz:60},
+    {rows:6,cols:5,blocked:[[2,1],[3,3]],pieces:['Z','X','V','L4','T4','D2'],obj:'Bloqueios assimétricos no 6×5!',sz:62},
+    {rows:5,cols:6,blocked:[[2,0],[2,5]],pieces:['F','I','T4','S4','L3','I3','M1'],obj:'Bloqueios laterais no meio!',sz:60},
+    {rows:7,cols:4,blocked:[[3,1],[3,2]],pieces:['L','N','P','T4','Z4','L3'],obj:'Grade alta 7×4 — bloqueio central!',sz:60},
+    {rows:5,cols:5,blocked:[[0,2],[4,2]],pieces:['W','U','L4','O4','I3','D2','M1'],obj:'Bloqueios topo e base no 5×5!',sz:70},
+    {rows:6,cols:5,blocked:[[1,2],[4,2]],pieces:['F','T','P','L4','J4','D2'],obj:'Coluna central com buracos!',sz:62},
+    {rows:5,cols:6,blocked:[],pieces:['L','V','W','T4','L3','D2','M1'],obj:'Grade 5×6 livre — 7 peças!',sz:60},
+    {rows:7,cols:4,blocked:[],pieces:['I','N','L4','T4','L3','I3','D2'],obj:'Grade alta 7×4 completamente livre!',sz:60},
+    {rows:6,cols:5,blocked:[[0,0],[0,4],[5,0],[5,4]],pieces:['F','T','V','L4','O4','D2'],obj:'Quatro cantos bloqueados no 6×5!',sz:62},
+    {rows:5,cols:5,blocked:[[2,1],[2,3]],pieces:['X','Y','L4','S4','I3','M1'],obj:'Bloqueios na linha do meio!',sz:70},
+    {rows:8,cols:4,blocked:[[3,1],[4,2]],pieces:['I','L','P','T4','S4','L3','D2'],obj:'Grade muito alta 8×4!',sz:56},
+    {rows:6,cols:5,blocked:[[1,1],[4,3]],pieces:['W','Z','P','L4','T4','M1'],obj:'Bloqueios internos assimétricos!',sz:62},
+    {rows:5,cols:6,blocked:[[0,3],[4,2]],pieces:['F','N','I4','Z4','L3','I3'],obj:'Bloqueios nos cantos superiores!',sz:60},
+    {rows:6,cols:6,blocked:[[2,2],[2,3],[3,2],[3,3]],pieces:['L','T','V','W','L4','T4'],obj:'Bloco 2×2 no centro do 6×6!',sz:58},
+  ];
+  med.forEach(m=>lvls.push(m));
+
+  // ── DIFÍCIL 61–85 ──────────────────────────────────
+  const hard = [
+    {rows:6,cols:5,blocked:[],pieces:['F','I','L','N','P','T'],obj:'Seis pentaminós no 6×5 — sem bloqueios!',sz:62},
+    {rows:5,cols:6,blocked:[[1,2],[3,3]],pieces:['L','N','P','T','V','M1'],obj:'Cinco pentaminós + bloqueios internos!',sz:60},
+    {rows:7,cols:5,blocked:[[3,2]],pieces:['F','I','L','N','P','T','M1'],obj:'Grade 7×5 — seis pentaminós!',sz:58},
+    {rows:6,cols:6,blocked:[[0,0],[5,5]],pieces:['W','X','Y','Z','L4','T4','D2'],obj:'Quadrado 6×6 cantos opostos bloqueados!',sz:58},
+    {rows:8,cols:5,blocked:[[2,2],[5,2]],pieces:['F','I','L','P','T','L4','M1'],obj:'Grade 8×5 alta com bloqueios!',sz:54},
+    {rows:6,cols:5,blocked:[[0,2],[2,4],[4,0]],pieces:['N','T','U','V','W','L3'],obj:'Três bloqueios em diagonal — 6×5!',sz:62},
+    {rows:7,cols:5,blocked:[[1,1],[5,3]],pieces:['X','Y','Z','P','L4','T4','D2'],obj:'Grade 7×5 bloqueios assimétricos!',sz:58},
+    {rows:6,cols:6,blocked:[[1,1],[4,4]],pieces:['F','I','N','P','W','T4','D2'],obj:'Diagonal de bloqueios no 6×6!',sz:58},
+    {rows:5,cols:7,blocked:[[2,3]],pieces:['L','T','U','V','X','L4','M1'],obj:'Grade larga 5×7 com bloqueio central!',sz:56},
+    {rows:8,cols:5,blocked:[],pieces:['F','I','L','N','P','T','U','D2'],obj:'Grande grade 8×5 livre — 7 peças!',sz:54},
+    {rows:6,cols:6,blocked:[[0,2],[0,3],[5,2],[5,3]],pieces:['W','X','Y','Z','T4','O4'],obj:'Faixas bloqueadas no topo e base!',sz:58},
+    {rows:7,cols:6,blocked:[[3,0],[3,5]],pieces:['F','L','N','P','T','V','D2'],obj:'Linha do meio com extremos bloqueados!',sz:56},
+    {rows:6,cols:7,blocked:[[1,3],[4,3]],pieces:['I','T','U','W','X','Y','D2'],obj:'Grade 6×7 — dois bloqueios em coluna!',sz:54},
+    {rows:8,cols:5,blocked:[[0,4],[7,0]],pieces:['F','I','L','N','P','T','V','D2'],obj:'Grade 8×5 cantos opostos bloqueados!',sz:54},
+    {rows:7,cols:5,blocked:[[2,1],[2,3],[4,1],[4,3]],pieces:['Z','X','Y','L4','T4','S4','D2'],obj:'Padrão quadriculado de bloqueios!',sz:58},
+    {rows:6,cols:6,blocked:[],pieces:['F','I','L','N','P','T','U','M1'],obj:'Quadrado 6×6 livre — 7 peças!',sz:58},
+    {rows:5,cols:8,blocked:[[2,2],[2,5]],pieces:['W','X','Y','Z','L4','O4','I3','D2'],obj:'Grade ultra-larga 5×8!',sz:52},
+    {rows:9,cols:4,blocked:[[4,1],[4,2]],pieces:['F','I','L','N','P','T','V','M1'],obj:'Torre 9×4 — bloqueio no meio!',sz:52},
+    {rows:7,cols:6,blocked:[[1,2],[5,3]],pieces:['W','X','Y','Z','L4','T4','I3','M1'],obj:'Grade 7×6 bloqueios internos!',sz:56},
+    {rows:6,cols:7,blocked:[],pieces:['F','I','L','N','P','T','U','L3','D2'],obj:'Grade 6×7 livre — 9 peças variadas!',sz:54},
+    {rows:8,cols:6,blocked:[[3,2],[4,3]],pieces:['F','I','L','N','P','T','V','W','D2'],obj:'Grade 8×6 com bloqueios diagonais!',sz:52},
+    {rows:7,cols:7,blocked:[[3,3]],pieces:['F','I','L','N','P','T','U','V','W','M1'],obj:'Quadrado 7×7 centro bloqueado — 9 peças!',sz:52},
+    {rows:6,cols:8,blocked:[[2,3],[3,4]],pieces:['X','Y','Z','L4','T4','S4','Z4','O4','L3'],obj:'Grade muito larga 6×8 — 9 tetraminós!',sz:38},
+    {rows:9,cols:5,blocked:[[4,2]],pieces:['F','I','L','N','P','T','U','V','M1'],obj:'Torre enorme 9×5 — 9 peças!',sz:38},
+    {rows:8,cols:6,blocked:[],pieces:['F','I','L','N','P','T','U','V','W','D2'],obj:'Grade 8×6 livre — 10 peças!',sz:52},
+  ];
+  hard.forEach(h=>lvls.push(h));
+
+  // ── IMPOSSÍVEL 86–100 ─────────────────────────────
+  const imp = [
+    {rows:8,cols:7,blocked:[[3,3]],pieces:['F','I','L','N','P','T','U','V','W','X','M1'],obj:'Grade 8×7 — 11 peças de pentaminó!',sz:36},
+    {rows:9,cols:6,blocked:[[2,2],[6,3]],pieces:['F','I','L','N','P','T','U','V','W','Y','D2'],obj:'Torre 9×6 com dois bloqueios!',sz:36},
+    {rows:7,cols:8,blocked:[[3,3],[3,4]],pieces:['F','I','L','N','P','T','U','V','W','X','D2'],obj:'Grade larga 7×8 — bloqueio central!',sz:36},
+    {rows:10,cols:6,blocked:[[0,0],[9,5]],pieces:['F','I','L','N','P','T','U','V','W','X','Z','M1'],obj:'Todos os 12 pentaminós no 10×6!',sz:34},
+    {rows:8,cols:8,blocked:[[0,0],[7,7],[0,7],[7,0]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','M1'],obj:'Quadrado 8×8 cantos bloqueados!',sz:36},
+    {rows:9,cols:7,blocked:[[4,3]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z'],obj:'Os 12 pentaminós na grade 9×7!',sz:36},
+    {rows:10,cols:7,blocked:[[4,3],[5,3]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z','D2'],obj:'Grande desafio 10×7 — 12 pentaminós!',sz:34},
+    {rows:8,cols:8,blocked:[[3,3],[4,4]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z','D2'],obj:'Quadrado 8×8 bloqueio diagonal!',sz:36},
+    {rows:11,cols:6,blocked:[[5,2],[5,3]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z','D2','M1'],obj:'Torre 11×6 — máximo desafio!',sz:34},
+    {rows:9,cols:8,blocked:[[0,0],[8,7],[0,7],[8,0]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z','D2','L3','M1'],obj:'NÍVEL LENDÁRIO 9×8 — todos os pentaminós!',sz:34},
+    {rows:10,cols:6,blocked:[],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z'],obj:'O desafio definitivo — 12 pentaminós!',sz:34},
+    {rows:8,cols:9,blocked:[[3,4],[4,4]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z','L3'],obj:'Grade ultra-larga 8×9!',sz:34},
+    {rows:11,cols:7,blocked:[[5,3]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z','D2','L3'],obj:'Grade gigante 11×7 — 14 peças!',sz:32},
+    {rows:9,cols:9,blocked:[[4,4]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z','L4','T4','D2','M1'],obj:'Quadrado 9×9 — todos os pentaminós + extras!',sz:34},
+    {rows:12,cols:7,blocked:[[5,3],[6,3]],pieces:['F','I','L','N','P','T','U','V','W','X','Y','Z','I4','L4','T4','D2'],obj:'🏆 NÍVEL 100 — IMPOSSÍVEL! Grade 12×7!',sz:32},
+  ];
+  imp.forEach(i=>lvls.push(i));
+
+  // Now fix: ensure sum of piece sizes == rows*cols - blocked.length
+  // If mismatch, pad with M1 or remove M1
+  lvls.forEach((lv,idx)=>{
+    const target = lv.rows * lv.cols - lv.blocked.length;
+    let cur = lv.pieces.reduce((s,p)=>s+PIECES[p].sz,0);
+    while(cur < target){ lv.pieces.push('M1'); cur += 1; }
+    while(cur > target && lv.pieces.includes('M1')){
+      const i = lv.pieces.lastIndexOf('M1');
+      lv.pieces.splice(i,1); cur -= 1;
+    }
+    // If still mismatch, swap last piece
+    if(cur !== target){
+      const diff = target - cur;
+      if(diff === 1){ lv.pieces.push('M1'); }
+      else if(diff === 2){ lv.pieces.push('D2'); }
+      else if(diff === 3){ lv.pieces.push('I3'); }
+    }
+  });
+
+  return lvls;
+}
+
+const LEVELS = makeLevels();
+
+function getDiff(lvl) {
+  if(lvl<=30) return {label:'🟢 Fácil',cls:'easy',color:'#4ade80'};
+  if(lvl<=60) return {label:'🟡 Médio',cls:'med',color:'#fbbf24'};
+  if(lvl<=85) return {label:'🔴 Difícil',cls:'hard',color:'#f87171'};
+  return {label:'🟣 Impossível',cls:'imp',color:'#a78bfa'};
+}
+
+// ═══════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════
+let currentLevel=1, selectedPiece=null, rotation=0, flipped=false;
+let boardState={}, placedPieces={}, usedPieces=new Set();
+let score=0, mistakes=0, answerAttempts=0, boardFull=false, lives=5;
+let answerChecked=false, areaCorrect=false, perimCorrect=false;
+
+// ═══════════════════════════════════════════════════
+// GEOMETRY
+// ═══════════════════════════════════════════════════
+function norm(cells){
+  const mr=Math.min(...cells.map(c=>c[0])), mc=Math.min(...cells.map(c=>c[1]));
+  return cells.map(c=>[c[0]-mr,c[1]-mc]);
+}
+function rot90(cells){ return norm(cells.map(([r,c])=>[c,-r])); }
+function flip(cells){ return norm(cells.map(([r,c])=>[r,-c])); }
+function pieceName(uid){ return uid?uid.split('#')[0]:null; }
+function getT(uid){
+  const name=pieceName(uid);
+  let cells=[...PIECES[name].cells.map(c=>[...c])];
+  for(let i=0;i<rotation;i++) cells=rot90(cells);
+  if(flipped) cells=flip(cells);
+  return cells;
+}
+function at(base,r,c){ return base.map(([dr,dc])=>[r+dr,c+dc]); }
+
+// ═══════════════════════════════════════════════════
+// BOARD
+// ═══════════════════════════════════════════════════
+function getLv(){ return LEVELS[currentLevel-1] || LEVELS[0]; }
+
+function renderBoard(){
+  const lv=getLv();
+  const board=document.getElementById('board');
+  board.style.gridTemplateColumns=`repeat(${lv.cols},${lv.sz}px)`;
+  board.innerHTML='';
+  for(let r=0;r<lv.rows;r++){
+    for(let c=0;c<lv.cols;c++){
+      const cell=document.createElement('div');
+      cell.className='cell';
+      cell.dataset.r=r; cell.dataset.c=c;
+      cell.style.width=cell.style.height=lv.sz+'px';
+      const isBlk=lv.blocked.some(([br,bc])=>br===r&&bc===c);
+      const placed=boardState[`${r},${c}`];
+      if(isBlk){
+        cell.classList.add('blocked');
+        cell.textContent='🔒';
+        cell.style.fontSize=Math.max(12,lv.sz*.3)+'px';
+      } else if(placed){
+        const placedName=pieceName(placed);
+        cell.classList.add('placed');
+        cell.style.background=PIECES[placedName].color+'cc';
+        cell.style.borderColor=PIECES[placedName].color;
+        cell.textContent=placedName.length<=2?placedName:'';
+        cell.style.color='rgba(255,255,255,.85)';
+        cell.title=`Peça ${placedName} — clique para remover`;
+        cell.onclick=()=>removeCell(r,c);
+      } else {
+        cell.classList.add('empty');
+        cell.onclick=()=>tryPlace(r,c);
+        cell.onmouseenter=()=>previewHover(r,c);
+        cell.onmouseleave=clearPreview;
+      }
+      board.appendChild(cell);
+    }
+  }
+  updateStats();
+}
+
+function gCell(r,c){ return document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`); }
+
+let prevCells=[];
+function previewHover(r,c){
+  clearPreview();
+  if(!selectedPiece) return;
+  const lv=getLv();
+  const targets=at(getT(selectedPiece),r,c);
+  targets.forEach(([tr,tc])=>{
+    if(tr<0||tr>=lv.rows||tc<0||tc>=lv.cols) return;
+    const cell=gCell(tr,tc);
+    if(!cell||!cell.classList.contains('empty')) return;
+    cell.style.background=PIECES[pieceName(selectedPiece)].color+'44';
+    cell.style.borderColor=PIECES[pieceName(selectedPiece)].color;
+    prevCells.push(cell);
+  });
+}
+function clearPreview(){
+  prevCells.forEach(c=>{ if(c.classList.contains('empty')){ c.style.background=''; c.style.borderColor=''; } });
+  prevCells=[];
+}
+
+function isAdjBlocked(targets){
+  const lv=getLv();
+  if(!lv.blocked||lv.blocked.length===0) return true;
+  for(const [r,c] of targets){
+    for(const [dr,dc] of [[0,1],[0,-1],[1,0],[-1,0]]){
+      if(lv.blocked.some(([br,bc])=>br===r+dr&&bc===c+dc)) return true;
+    }
+  }
+  return false;
+}
+
+function tryPlace(r,c){
+  if(!selectedPiece){ setFb('Primeiro selecione uma peça!',''); return; }
+  const lv=getLv();
+  const uid=selectedPiece;
+  const name=pieceName(uid);
+  const targets=at(getT(uid),r,c);
+  for(const [tr,tc] of targets){
+    if(tr<0||tr>=lv.rows||tc<0||tc>=lv.cols){ setFb('❌ A peça sai do tabuleiro!','err'); mistakes++; return; }
+    if(lv.blocked.some(([br,bc])=>br===tr&&bc===tc)){ setFb('❌ Não pode colocar sobre a peça fixa!','err'); mistakes++; return; }
+    if(boardState[`${tr},${tc}`]){ setFb('❌ Já tem uma peça aí!','err'); mistakes++; return; }
+  }
+  if(lv.blocked.length>0&&!isAdjBlocked(targets)){ setFb('❌ Coloque ao redor das peças roxas!','err'); mistakes++; return; }
+  targets.forEach(([tr,tc])=>{ boardState[`${tr},${tc}`]=uid; });
+  placedPieces[uid]=targets;
+  usedPieces.add(uid);
+  score+=100;
+  setFb(`✅ Peça ${name} colocada!`,'ok');
+  selectedPiece=null;
+  renderBoard(); renderPieces(); checkWin();
+}
+
+function removeCell(r,c){
+  const uid=boardState[`${r},${c}`]; if(!uid) return;
+  if(placedPieces[uid]) placedPieces[uid].forEach(([tr,tc])=>delete boardState[`${tr},${tc}`]);
+  else delete boardState[`${r},${c}`];
+  delete placedPieces[uid];
+  usedPieces.delete(uid);
+  score=Math.max(0,score-50);
+  setFb(`🔄 Peça ${pieceName(uid)} removida.`,'');
+  renderBoard(); renderPieces();
+}
+
+// ═══════════════════════════════════════════════════
+// STATS + ANSWERS
+// ═══════════════════════════════════════════════════
+function calcStats(){
+  const placed=Object.keys(boardState).length;
+  let perim=0;
+  Object.keys(boardState).forEach(key=>{
+    const [r,c]=key.split(',').map(Number);
+    [[0,1],[0,-1],[1,0],[-1,0]].forEach(([dr,dc])=>{
+      if(!boardState[`${r+dr},${c+dc}`]) perim++;
+    });
+  });
+  return {area:placed, perim};
+}
+
+function updateStats(){
+  const lv=getLv();
+  const {area,perim}=calcStats();
+  const free=lv.rows*lv.cols-lv.blocked.length;
+  const placed=Object.keys(boardState).length;
+  const pct=free>0?Math.round(placed/free*100):0;
+  document.getElementById('pb').style.width=pct+'%';
+  document.getElementById('pb-txt').textContent=`${placed}/${free} células`;
+  document.getElementById('pts-disp').textContent=score+' pts';
+  const stars=mistakes<=1?3:mistakes<=3?2:1;
+  for(let i=1;i<=3;i++) document.getElementById('st'+i).classList.toggle('lit',i<=stars);
+}
+
+// ═══════════════════════════════════════════════════
+// COLOR PERCENTAGE
+// ═══════════════════════════════════════════════════
+let pctAttempts=0, pctChecked=false;
+
+function renderPctRows(){
+  const lv=getLv();
+  // Group pieces by color name, deduplicate colors
+  const colorMap={}; // color → {name, color, totalCells}
+  lv.pieces.forEach(name=>{
+    const p=PIECES[name];
+    if(!colorMap[p.color]) colorMap[p.color]={name,color:p.color,totalCells:0};
+    colorMap[p.color].totalCells+=p.sz;
+  });
+  const container=document.getElementById('pct-rows');
+  container.innerHTML='';
+  Object.values(colorMap).forEach(({name,color,totalCells})=>{
+    const row=document.createElement('div');
+    row.className='pct-row';
+    row.innerHTML=
+      `<div class="pct-swatch" style="background:${color}"></div>`+
+      `<div class="pct-name" style="color:${color};font-weight:700">${name}</div>`+
+      `<input class="pct-input" type="number" id="pct-${color.replace('#','')}" placeholder="?" min="0" max="100" step="0.1">`+
+      `<div class="pct-symbol">%</div>`;
+    container.appendChild(row);
+  });
+  document.getElementById('pct-feedback').textContent='';
+  pctAttempts=0; pctChecked=false;
+  // Re-enable all inputs
+  container.querySelectorAll('.pct-input').forEach(i=>{ i.disabled=false; i.className='pct-input'; i.value=''; });
+}
+
+function checkPercentages(){
+  if(pctChecked){ document.getElementById('pct-feedback').textContent='✅ Já respondido!'; document.getElementById('pct-feedback').style.color='#4ade80'; return; }
+  if(!boardFull){ document.getElementById('pct-feedback').textContent='⚠️ Complete o tabuleiro primeiro!'; document.getElementById('pct-feedback').style.color='#fbbf24'; return; }
+
+  const lv=getLv();
+  const totalFree=lv.rows*lv.cols - lv.blocked.length;
+
+  // Build color totals from placed pieces on board
+  const colorCells={};
+  Object.values(boardState).forEach(uid=>{
+    const name=pieceName(uid);
+    const color=PIECES[name].color;
+    colorCells[color]=(colorCells[color]||0)+1;
+  });
+
+  const fb=document.getElementById('pct-feedback');
+  let allCorrect=true, anyFilled=false;
+  const inputs=document.querySelectorAll('.pct-input');
+
+  inputs.forEach(inp=>{
+    const colorHex='#'+inp.id.replace('pct-','');
+    const cells=colorCells[colorHex]||0;
+    const correctPct=Math.round((cells/totalFree)*1000)/10; // 1 decimal
+    const val=parseFloat(inp.value);
+    anyFilled=anyFilled||!isNaN(val);
+    if(isNaN(val)){ allCorrect=false; return; }
+    // Accept rounding: ±0.5%
+    const ok=Math.abs(val-correctPct)<=0.5;
+    inp.className='pct-input '+(ok?'correct':'wrong');
+    if(!ok) allCorrect=false;
+  });
+
+  if(!anyFilled){ fb.textContent='⚠️ Preencha os campos de porcentagem!'; fb.style.color='#fbbf24'; return; }
+
+  pctAttempts++;
+  mistakes++;
+
+  if(allCorrect){
+    const bonus=pctAttempts===1?150:pctAttempts===2?80:30;
+    score+=bonus;
+    fb.textContent=`🎉 Correto! +${bonus} pts de bônus!`;
+    fb.style.color='#4ade80';
+    pctChecked=true;
+    // Lock inputs
+    inputs.forEach(i=>i.disabled=true);
+    // Pulse hearts
+    for(let i=1;i<=lives;i++){
+      const h=document.getElementById('h'+i);
+      setTimeout(()=>{ h.classList.add('pulse'); setTimeout(()=>h.classList.remove('pulse'),400); },i*70);
+    }
+    updateStats();
+  } else {
+    // Lose a life
+    if(lives>0) loseLife();
+    const penalty=pctAttempts===1?30:pctAttempts===2?60:90;
+    score=Math.max(0,score-penalty);
+
+    // Show correct values after 3 wrong attempts
+    if(pctAttempts>=3){
+      inputs.forEach(inp=>{
+        const colorHex='#'+inp.id.replace('pct-','');
+        const cells=colorCells[colorHex]||0;
+        const correctPct=Math.round((cells/totalFree)*1000)/10;
+        inp.value=correctPct;
+        inp.disabled=true;
+        inp.className='pct-input wrong';
+      });
+      fb.textContent=`🔒 Tentativas esgotadas! −${penalty} pts. Veja as respostas acima.`;
+      fb.style.color='#fbbf24';
+      pctChecked=true;
+    } else {
+      const remaining=3-pctAttempts;
+      fb.innerHTML=`❌ Alguma % está errada. −${penalty} pts | ❤️ ${remaining} tentativa${remaining!==1?'s':''} restante${remaining!==1?'s':''}`;
+      fb.style.color='#f87171';
+    }
+    updateStats();
+
+    // Game over check
+    setTimeout(()=>{
+      if(lives<=0){
+        const lv2=getLv();
+        const tot=lv2.rows*lv2.cols-lv2.blocked.length;
+        let answerLines='';
+        inputs.forEach(inp=>{
+          const colorHex='#'+inp.id.replace('pct-','');
+          const cells=colorCells[colorHex]||0;
+          const p=Math.round((cells/tot)*1000)/10;
+          answerLines+=`${colorHex}: ${p}%  `;
+        });
+        document.getElementById('go-sub').textContent='Você usou todas as vidas nesta fase.';
+        document.getElementById('go-answer').textContent=answerLines.trim();
+        document.getElementById('gameover-overlay').style.display='flex';
+      }
+    },450);
+  }
+}
+
+function resetPctSection(){
+  renderPctRows();
+}
+
+function renderLives(){
+  for(let i=1;i<=5;i++){
+    const h=document.getElementById('h'+i);
+    if(i<=lives){ h.classList.remove('lost'); }
+    else { h.classList.add('lost'); }
+  }
+  const lbl=document.getElementById('lives-label');
+  if(lives===0) lbl.textContent='💀 Sem vidas!';
+  else if(lives===1) lbl.textContent='⚠️ Última vida!';
+  else lbl.textContent=lives+' vidas';
+  lbl.style.color=lives<=1?'#f87171':lives<=2?'#fbbf24':'#f87171';
+}
+
+function loseLife(){
+  // Animate current lost heart
+  const h=document.getElementById('h'+lives);
+  h.classList.add('shake');
+  setTimeout(()=>{ h.classList.remove('shake'); lives--; renderLives(); },350);
+}
+
+function checkAnswers(){
+  const lv=getLv();
+  const {area,perim}=calcStats();
+  const ia_el=document.getElementById('inp-area');
+  const ip_el=document.getElementById('inp-perim');
+  const fb=document.getElementById('ans-feedback');
+
+  if(answerChecked){ fb.textContent='✅ Já respondido corretamente!'; fb.style.color='#4ade80'; return; }
+  if(lives<=0) return; // already game over
+
+  const ia=parseInt(ia_el.value);
+  const ip=parseInt(ip_el.value);
+  if(isNaN(ia)||isNaN(ip)){ fb.textContent='⚠️ Preencha os dois campos!'; fb.style.color='#fbbf24'; return; }
+
+  areaCorrect=(ia===area);
+  perimCorrect=(ip===perim);
+
+  if(areaCorrect&&perimCorrect){
+    ia_el.className='ainput correct'; ip_el.className='ainput correct';
+    // Bonus decreases with attempts used
+    const bonus=answerAttempts===0?200:answerAttempts===1?150:answerAttempts===2?100:answerAttempts===3?50:20;
+    score+=bonus;
+    fb.textContent=`🎉 Correto! +${bonus} pontos de bônus! (${5-lives} tentativa${5-lives!==1?'s':''} usada${5-lives!==1?'s':''})`;
+    fb.style.color='#4ade80';
+    // Pulse remaining hearts
+    for(let i=1;i<=lives;i++){
+      const h=document.getElementById('h'+i);
+      setTimeout(()=>{ h.classList.add('pulse'); setTimeout(()=>h.classList.remove('pulse'),400); },i*80);
+    }
+    answerChecked=true;
+    updateStats();
+    if(boardFull) setTimeout(showVictory,700);
+  } else {
+    answerAttempts++;
+    mistakes++;
+    const penalty=answerAttempts===1?50:answerAttempts===2?100:150;
+    score=Math.max(0,score-penalty);
+
+    ia_el.className='ainput'+(areaCorrect?' correct':' wrong');
+    ip_el.className='ainput'+(perimCorrect?' correct':' wrong');
+
+    loseLife();
+
+    setTimeout(()=>{
+      if(lives<=0){
+        // Game over
+        ia_el.disabled=true; ip_el.disabled=true;
+        ia_el.value=area; ip_el.value=perim;
+        ia_el.className='ainput wrong'; ip_el.className='ainput wrong';
+        document.getElementById('go-sub').textContent=`Você usou todas as 5 vidas nesta fase.`;
+        document.getElementById('go-answer').textContent=`Área = ${area}  |  Perímetro = ${perim}`;
+        document.getElementById('gameover-overlay').style.display='flex';
+        fb.textContent='💔 Sem vidas! Veja a resposta acima.';
+        fb.style.color='#f87171';
+      } else {
+        let msg='';
+        if(!areaCorrect) msg+='Área errada. ';
+        if(!perimCorrect) msg+='Perímetro errado. ';
+        msg+=`−${penalty} pts | ❤️ ${lives} vida${lives!==1?'s':''} restante${lives!==1?'s':''}`;
+        fb.innerHTML=`❌ ${msg}`;
+        fb.style.color='#f87171';
+      }
+      updateStats();
+    },400);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// WIN
+// ═══════════════════════════════════════════════════
+function checkWin(){
+  const lv=getLv();
+  for(let r=0;r<lv.rows;r++){
+    for(let c=0;c<lv.cols;c++){
+      if(!lv.blocked.some(([br,bc])=>br===r&&bc===c)&&!boardState[`${r},${c}`]) return;
+    }
+  }
+  boardFull=true;
+  setTimeout(()=>{
+    if(!answerChecked){
+      setFb('✅ Tabuleiro completo! Agora preencha a Área e o Perímetro e clique em Verificar!','ok');
+    } else {
+      showVictory();
+    }
+  },300);
+}
+
+function showVictory(){
+  const {area,perim}=calcStats();
+  const stars=mistakes<=1?3:mistakes<=3?2:1;
+  score+=500;
+  for(let i=1;i<=3;i++) document.getElementById('vs'+i).classList.toggle('lit',i<=stars);
+  document.getElementById('v-pts2').textContent=score+' pts';
+  document.getElementById('va-area').textContent=area;
+  document.getElementById('va-perim').textContent=perim;
+  document.getElementById('v-lvl').textContent=currentLevel;
+  document.getElementById('v-score2').textContent=score;
+  document.getElementById('v-sub').textContent=`Nível ${currentLevel} concluído! ${getDiff(currentLevel).label}`;
+  document.getElementById('next-btn').style.display=currentLevel<100?'':'none';
+  confetti();
+  showScreen('victory-screen');
+}
+
+function nextLevel(){ if(currentLevel<100) startGame(currentLevel+1); else showScreen('menu-screen'); }
+
+// ═══════════════════════════════════════════════════
+// PIECES PANEL
+// ═══════════════════════════════════════════════════
+function renderPieces(){
+  const lv=getLv();
+  const list=document.getElementById('pieces-list');
+  list.innerHTML='';
+  lv.pieces.forEach((name,idx)=>{
+    const uid=name+'#'+idx; // unique id per piece slot
+    const p=PIECES[name];
+    const el=document.createElement('div');
+    el.className='popt';
+    if(selectedPiece===uid) el.classList.add('sel');
+    if(usedPieces.has(uid)) el.classList.add('used');
+    // mini grid
+    const cells=p.cells;
+    const maxR=Math.max(...cells.map(c=>c[0])), maxC=Math.max(...cells.map(c=>c[1]));
+    const g=document.createElement('div');
+    g.style.cssText=`display:grid;grid-template-columns:repeat(${maxC+1},9px);gap:1px;flex-shrink:0`;
+    for(let r=0;r<=maxR;r++) for(let c=0;c<=maxC;c++){
+      const d=document.createElement('div');
+      d.style.cssText=`width:9px;height:9px;border-radius:1px;background:${cells.some(([cr,cc])=>cr===r&&cc===c)?p.color:'transparent'}`;
+      g.appendChild(d);
+    }
+    el.appendChild(g);
+    const lbl=document.createElement('div');
+    lbl.className='popt-name';
+    lbl.textContent=usedPieces.has(uid)?`${name} ✓`:`${name} (${p.sz}□)`;
+    el.appendChild(lbl);
+    if(!usedPieces.has(uid)) el.onclick=()=>{
+      selectedPiece=uid; rotation=0; flipped=false;
+      setFb(`Peça ${name} selecionada (${p.sz} quadradinhos)!`,'');
+      renderPieces();
+    };
+    list.appendChild(el);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════
+function rotatePiece(){ if(!selectedPiece){setFb('Selecione uma peça!','');return;} rotation=(rotation+1)%4; setFb(`Peça ${pieceName(selectedPiece)} girada ${rotation*90}°`,''); }
+function flipPiece(){ if(!selectedPiece){setFb('Selecione uma peça!','');return;} flipped=!flipped; setFb(`Peça ${pieceName(selectedPiece)} espelhada!`,''); }
+function resetLevel(){
+  const savedLives=lives<=0?5:lives;
+  startGame(currentLevel);
+  lives=savedLives;
+  renderLives();
+  renderPctRows();
+}
+function showHint(){
+  const lv=getLv();
+  if(!selectedPiece){setFb('💡 Selecione uma peça primeiro!','');return;}
+  const t=getT(selectedPiece); // getT now accepts uid
+  for(let r=0;r<lv.rows;r++) for(let c=0;c<lv.cols;c++){
+    const tgts=at(t,r,c);
+    let ok=true;
+    for(const [tr,tc] of tgts){
+      if(tr<0||tr>=lv.rows||tc<0||tc>=lv.cols||boardState[`${tr},${tc}`]||lv.blocked.some(([br,bc])=>br===tr&&bc===tc)){ok=false;break;}
+    }
+    if(ok&&(lv.blocked.length===0||isAdjBlocked(tgts))){
+      tgts.forEach(([tr,tc])=>{const cl=gCell(tr,tc);if(cl)cl.classList.add('hint-ok');});
+      setTimeout(()=>tgts.forEach(([tr,tc])=>gCell(tr,tc)?.classList.remove('hint-ok')),1600);
+      setFb('💡 Posição destacada em verde!','');
+      return;
+    }
+  }
+  setFb('💡 Tente rotacionar ou espelhar a peça!','');
+}
+function setFb(msg,cls){
+  const el=document.getElementById('fb-msg');
+  el.className='fbmsg'+(cls?' '+cls:'');
+  el.textContent=msg;
+}
+
+// ═══════════════════════════════════════════════════
+// START GAME
+// ═══════════════════════════════════════════════════
+function startGame(n){
+  currentLevel=n; selectedPiece=null; rotation=0; flipped=false;
+  boardState={}; placedPieces={}; usedPieces=new Set();
+  score=0; mistakes=0; answerAttempts=0; boardFull=false; lives=5; answerChecked=false; areaCorrect=false; perimCorrect=false;
+  document.getElementById('inp-area').value='';
+  document.getElementById('inp-perim').value='';
+  document.getElementById('inp-area').className='ainput';
+  document.getElementById('inp-perim').className='ainput';
+  document.getElementById('inp-area').disabled=false;
+  document.getElementById('inp-perim').disabled=false;
+  document.getElementById('ans-feedback').textContent='';
+  renderLives();
+  renderPctRows();
+  const lv=getLv();
+  const d=getDiff(n);
+  document.getElementById('lvl-badge').textContent=`Nível ${n}`;
+  document.getElementById('diff-lbl').textContent=d.label;
+  document.getElementById('diff-lbl').style.color=d.color;
+  document.getElementById('obj-txt').textContent=lv.obj;
+  renderBoard(); renderPieces();
+  setFb('Selecione uma peça e posicione no tabuleiro!','');
+  showScreen('game-screen');
+}
+
+// ═══════════════════════════════════════════════════
+// MENU LEVEL SELECT
+// ═══════════════════════════════════════════════════
+function filterDiff(d){
+  const area=document.getElementById('level-select-area');
+  const ranges={easy:[1,30],med:[31,60],hard:[61,85],imp:[86,100]};
+  const labels={easy:'🟢 Fácil',med:'🟡 Médio',hard:'🔴 Difícil',imp:'🟣 Impossível'};
+  const colors={easy:'#4ade80',med:'#fbbf24',hard:'#f87171',imp:'#a78bfa'};
+  const [s,e]=ranges[d];
+  let html=`<p style="font-size:12px;color:${colors[d]};margin-bottom:8px;font-weight:700">${labels[d]} — Níveis ${s} a ${e}</p><div class="level-select-grid">`;
+  for(let i=s;i<=e;i++) html+=`<button class="lvl-btn ${d}" onclick="startGame(${i})">${i}</button>`;
+  html+='</div>';
+  area.innerHTML=html;
+}
+
+// ═══════════════════════════════════════════════════
+// CONFETTI
+// ═══════════════════════════════════════════════════
+function confetti(){
+  const colors=['#f7971e','#ffd200','#4ade80','#60a5fa','#f472b6','#a78bfa'];
+  for(let i=0;i<50;i++){
+    const c=document.createElement('div');
+    c.className='conf';
+    c.style.cssText=`left:${Math.random()*100}vw;top:0;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.6}s`;
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),(2.5+Math.random())*1000);
+  }
+}
+
+// ═══════════════════════════════════════════════════
+// RULES SHOWCASE
+// ═══════════════════════════════════════════════════
+function initShowcase(){
+  const sc=document.getElementById('rules-showcase');
+  ['F','I','L','N','P','T','U','V','W','X','Y','Z'].forEach(name=>{
+    const p=PIECES[name];
+    const cells=p.cells;
+    const mr=Math.max(...cells.map(c=>c[0])), mc=Math.max(...cells.map(c=>c[1]));
+    const wrap=document.createElement('div'); wrap.className='pmini';
+    const g=document.createElement('div');
+    g.className='pmini-grid';
+    g.style.gridTemplateColumns=`repeat(${mc+1},10px)`;
+    for(let r=0;r<=mr;r++) for(let c=0;c<=mc;c++){
+      const d=document.createElement('div');
+      d.className='pmini-cell';
+      d.style.cssText=`width:10px;height:10px;background:${cells.some(([cr,cc])=>cr===r&&cc===c)?p.color:'transparent'}`;
+      g.appendChild(d);
+    }
+    const lbl=document.createElement('div');
+    lbl.style.cssText='font-size:10px;color:#a0c4ff';
+    lbl.textContent=name;
+    wrap.appendChild(g); wrap.appendChild(lbl);
+    sc.appendChild(wrap);
+  });
+}
+
+// ═══════════════════════════════════════════════════
+// SCREEN MANAGER
+// ═══════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+initShowcase();
+
+// Auto-trigger win check when all filled AND answer verified
+document.getElementById('inp-perim').addEventListener('keydown',e=>{ if(e.key==='Enter') checkAnswers(); });
+document.getElementById('inp-area').addEventListener('keydown',e=>{ if(e.key==='Enter') checkAnswers(); });
+</script>
+<!-- ══════════════ GAME OVER OVERLAY ══════════════ -->
+<div class="gameover-overlay" id="gameover-overlay" style="display:none">
+  <div class="gameover-box">
+    <div class="gameover-title">💔</div>
+    <div class="gameover-msg">Sem vidas!</div>
+    <div class="gameover-sub" id="go-sub">Você usou todas as 5 tentativas nesta fase.</div>
+    <div style="margin-bottom:18px;font-size:13px;color:#fbbf24" id="go-answer"></div>
+    <button class="mbtn" onclick="resetLevel();document.getElementById('gameover-overlay').style.display='none'" style="margin:4px">↺ Tentar novamente</button>
+    <button class="mbtn sec" onclick="showScreen('menu-screen');document.getElementById('gameover-overlay').style.display='none'" style="margin:4px">🏠 Menu</button>
+  </div>
+</div>
+
+</body></html>
